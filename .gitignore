@@ -1,0 +1,6 @@
+# Created by .ignore support plugin (hsz.mobi)
+***.idea/vcs.xml
+***.idea
+***spark-warehouse
+***player_api_id
+***processed_player_data
