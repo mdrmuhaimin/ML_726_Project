@@ -47,17 +47,23 @@ f16_f17_Column_translation = [
     ('gk_positioning', 'GK_Positioning'),
     ('gk_reflexes', 'GK_Reflexes'),
     ('height', 'Height'),
-    ('weight', 'Weight')
+    ('weight', 'Weight'),
+    ('Age', 'Age'),
+    ('Work_Rate', 'Work_Rate')
 ]
 
 missing_epl_players = spark.createDataFrame([
     Row(id=138985, player_api_id=-1, player_name='Papy Djilobodji', player_fifa_api_id=197937, birthday='1988-12-01 00:00:00', height=193, weight=181)
-]).select( 'id', 'player_api_id', 'player_name', 'player_fifa_api_id','birthday', 'height', 'weight') #Select statement to enforce the order of the colum
+]).select([ 'id', 'player_api_id', 'player_name', 'player_fifa_api_id','birthday', 'height', 'weight']) #Select statement to enforce the order of the colum
 
 def calculate_age(birthday):
     birthday = datetime.strptime(birthday, '%Y-%m-%d %H:%M:%S').date()
     age_in = datetime.strptime('2015-10-01', '%Y-%m-%d').date()
     return age_in.year - birthday.year - ((age_in.month, age_in.day) < (birthday.month, birthday.day))
+
+def _combine_workrate(att_wr, def_wr):
+    return '{} / {}'.format(att_wr, def_wr)
+
 
 
 def main():
@@ -71,10 +77,11 @@ def main():
 
     # Get fifa 17 player data and associated fifa_api_id
     fifa_17_player_data = spark.read.csv('input/EPL_Players_Data.csv', header=True).withColumnRenamed('fifa_api_id', 'player_fifa_api_id').cache()
-    player_api_id = fifa_17_player_data.select('player_fifa_api_id')
+    player_api_id = fifa_17_player_data.select('player_fifa_api_id').cache()
 
     # Make workrate column same as Fifa 17 data and delete all unnecessary column
-    player_attr_data = player_attr_data.withColumn('Work_Rate', player_attr_data.attacking_work_rate + ' / ' + player_attr_data.defensive_work_rate)
+    combine_workrate = functions.udf(_combine_workrate, types.StringType())
+    player_attr_data = player_attr_data.withColumn('Work_Rate', combine_workrate(player_attr_data.attacking_work_rate, player_attr_data.defensive_work_rate))
     player_attr_data = player_attr_data.drop('player_api_id', 'potential', 'preferred_foot', 'attacking_work_rate', 'defensive_work_rate')
 
     # Get appropriate version of player
@@ -88,11 +95,16 @@ def main():
     #Join player data from with EPL players from Fifa 17
     print('Players to be imported from Fifa 17', player_api_id.count())
     player_attr_data = player_api_id.join(player_attr_data, 'player_fifa_api_id', 'left')
+    player_api_id.unpersist()
+    player_attr_data.cache()
     print('Total imported player from Fifa 17', player_attr_data.count())
 
     #Getting player that are available in Fifa 17 but not in Fifa 16
     non_existent_player_data = player_attr_data.select('player_fifa_api_id').filter(player_attr_data.id.isNull())
+    non_existent_player_data.cache()
     print('Total player attr available only in Fifa 17', non_existent_player_data.count())
+    player_to_be_imported = fifa_17_player_data.join(non_existent_player_data, 'player_fifa_api_id')
+    non_existent_player_data.unpersist()
 
     #Getting player data that are available in both Fifa 16 and Fifa 17
     player_attr_data = player_attr_data.filter(player_attr_data.id.isNotNull())
@@ -101,18 +113,28 @@ def main():
     #Adding name, weight and Height with player data
     player_attr_data = player_attr_data.join(player_data, 'player_fifa_api_id', 'left')
     print('Total player with found name, weight, height, age', player_attr_data.count())
-    missing_players_in_name_weight_height = player_attr_data.filter(player_attr_data.player_name.isNull()).cache()
+    missing_players_in_name_weight_height = player_attr_data.filter(player_attr_data.player_name.isNull())
+    missing_players_in_name_weight_height.cache()
     print('Missing players from name data', missing_players_in_name_weight_height.count())
     if missing_players_in_name_weight_height.count() > 0:
         missing_players_in_name_weight_height.select('id', 'player_fifa_api_id').show()
         print('Above players are missing in name data')
     missing_players_in_name_weight_height.unpersist()
-    return
+    player_attr_data.unpersist()
 
-    #TODO: Non_existent_player_data attributes from Fifa 17
-    non_existent_player_data = fifa_17_player_data.join(non_existent_player_data, 'player_fifa_api_id')
-    print(non_existent_player_data.count())
-    non_existent_player_data.show()
+    #Change column name same as Fifa 17
+
+    for name_conv in f16_f17_Column_translation:
+        f16_col = name_conv[0]
+        f17_col = name_conv[1]
+        player_attr_data = player_attr_data.withColumnRenamed(f16_col, f17_col)
+
+    player_attr_data = player_attr_data.drop('id')
+    features = player_attr_data.columns
+    player_attr_data = player_attr_data.select(features)
+    player_to_be_imported = player_to_be_imported.select(features)
+    final_player_data = player_attr_data.union(player_to_be_imported)
+    final_player_data.toPandas().to_csv('f16_players.csv', sep=',', encoding='utf-8')
     return
 
 if __name__ == "__main__":
