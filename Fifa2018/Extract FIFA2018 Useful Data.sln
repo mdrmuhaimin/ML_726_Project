@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.16
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Extract FIFA2018 Useful Data", "Extract FIFA2018 Useful Data\Extract FIFA2018 Useful Data.pyproj", "{C25AB4BE-100A-4AF0-B1F8-B4D18617C60B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C25AB4BE-100A-4AF0-B1F8-B4D18617C60B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C25AB4BE-100A-4AF0-B1F8-B4D18617C60B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D519319B-773B-46C0-9319-E8491C8BE1CE}
+	EndGlobalSection
+EndGlobal
