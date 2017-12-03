@@ -25,4 +25,4 @@ filtered_players = players[players['ID'].isin(id['fifa_api_id'])]
 
 print(filtered_players)
 
-players.to_csv('filtered_fifa2018_players.csv')
+filtered_players.to_csv('filtered_fifa2018_players.csv')
