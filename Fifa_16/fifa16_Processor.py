@@ -76,7 +76,7 @@ def main():
     player_data = player_data.withColumn('Age', get_age(player_data.birthday)).drop('birthday', 'player_api_id', 'id')
 
     # Get fifa 17 player data and associated fifa_api_id
-    fifa_17_player_data = spark.read.csv('input/EPL_Players_Data.csv', header=True).withColumnRenamed('fifa_api_id', 'player_fifa_api_id').cache()
+    fifa_17_player_data = spark.read.csv('input/f17_players.csv', header=True).withColumnRenamed('fifa_api_id', 'player_fifa_api_id').cache()
     player_api_id = fifa_17_player_data.select('player_fifa_api_id').cache()
 
     # Make workrate column same as Fifa 17 data and delete all unnecessary column
