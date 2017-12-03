@@ -21,9 +21,19 @@
 \providecommand{\BIBdecl}{\relax}
 \BIBdecl
 
-\bibitem{chalasani1999approximating}
-P.~Chalasani and R.~Motwani, ``Approximating capacitated routing and delivery
-  problems,'' \emph{SIAM Journal on Computing}, vol.~28, no.~6, pp. 2133--2149,
-  1999.
+\bibitem{he}
+Y.~He, ``Predicting market value of soccer players using linear modeling
+  techniques,'' \emph{Unpublished manuscript}, 2013.
+
+\bibitem{brooks}
+J.~Brooks, M.~Kerr, and J.~Guttag, ``Developing a data-driven player ranking in
+  soccer using predictive model weights,'' in \emph{Proceedings of the 22nd ACM
+  SIGKDD International Conference on Knowledge Discovery and Data
+  Mining}.\hskip 1em plus 0.5em minus 0.4em\relax ACM, 2016, pp. 49--55.
+
+\bibitem{vroonen}
+R.~Vroonen, T.~Decroos, J.~Van~Haaren, and J.~Davis, ``Predicting the potential
+  of professional soccer players,'' in \emph{Machine Learning and Data Mining
+  for Sports Analytics ECML/PKDD 2017 workshop}, 2017.
 
 \end{thebibliography}

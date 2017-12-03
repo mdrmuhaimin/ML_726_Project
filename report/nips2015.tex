@@ -75,7 +75,7 @@ The task of selecting suitable players has been a major problem in premier leagu
 
 \section{Introduction}
 
-With the growing popularity of soccer in modern era, the clubs are facing a new problem of selecting suitable player in transfer window. Unfortunately, the performance of a player depends on many physical, psychological and conditional features. Researchers have proposed several machine learning algorithms to learn the ratings based on the features. However, the managers may not be able to use these methods during a transfer window because all of the features required by the models are not available at the start of transfer window. For example, traditional approaches rely on shot accuracy of the current season, However, shot accuracy can only be correctly calculated at the end of the season. 
+With the growing popularity of soccer in modern era, the clubs are facing a new problem of selecting suitable player in transfer window. Unfortunately, the performance of a player depends on many physical, psychological and conditional features. Researchers have proposed several machine learning algorithms to learn the ratings based on the features. However, the managers may not be able to use these methods during a transfer window because all of the features required by the models are not available at the start of transfer window. For example, traditional approaches rely on shot accuracy of the current season, However, shot accuracy can only be correctly calculated at the end of the season.
 
 In this project, we developed a model to address this particular issue of predicting overall performance from a blend of known and unknown features. Our model works in two steps. In first step, we identify the unknown features (we refer to them as key features from throughout the rest of this paper) and estimate their values from previous years performance. In the second step, we plug in the key features along with other known features (fixed features like height, weight, etc) to estimate the overall rating. Because of the initial error in calculating key features, our model are sometimes outperformed by the existing approaches. However, it can be easily applied to real life scenarios.
      
@@ -85,59 +85,21 @@ In this project, we developed a model to address this particular issue of predic
 	\includegraphics[width=4in]{pic1.png}
 	\caption{Graphical structure of our model}
 \end{figure}
-\subsection{Style}
+\subsection{Related Works}
+Yuan He \cite{he} developed a model to predict the market value of a player based on different predictors. The predictors are classified into two categories: personal information and performance data. Personal informations of a player does not vary (except age) over seasons. However, performance data shows significant variations. He used 8 personal and 5 performance predictors as features in a dataset consisting of records of 5 years and demonstrated the effectiveness of machine learning techniques on predicting the price of players. However, whereas the price of a player depends on last years performance, the rating depends totally on current years performance. Therefore, He's method are not effective for predicting future ratings.
 
-Papers to be submitted to NIPS 2015 must be prepared according to the
-instructions presented here. Papers may be only up to eight pages long,
-including figures. Since 2009 an additional ninth page \textit{containing only
-cited references} is allowed. Papers that exceed nine pages will not be
-reviewed, or in any other way considered for presentation at the conference.
-%This is a strict upper bound. 
+Brooks \cite{brooks} et el. implemented a model to measure the defensive, midfield and attacking score of a player solely bessed on pass completion rate. This value is derived based
+on the relationship of pass locations in a possession and shot
+opportunities generated. This relationship is learned by ap-
+plying a supervised machine learning model to pass locations
+in event data from the 2012-2013 La Liga season. However, In reality, pass completion rate of current year is not known at transfer time and last year rate may not be a good indicator for current year. The Brooks model address the second problem of our model.
 
-Please note that this year we have introduced automatic line number generation
-into the style file (for \LaTeXe and Word versions). This is to help reviewers
-refer to specific lines of the paper when they make their comments. Please do
-NOT refer to these line numbers in your paper as they will be removed from the
-style file for the final version of accepted papers.
-
-The margins in 2015 are the same as since 2007, which allow for $\approx 15\%$
-more words in the paper compared to earlier years. We are also again using 
-double-blind reviewing. Both of these require the use of new style files.
-
-Authors are required to use the NIPS \LaTeX{} style files obtainable at the
-NIPS website as indicated below. Please make sure you use the current files and
-not previous versions. Tweaking the style files may be grounds for rejection.
-
-%% \subsection{Double-blind reviewing}
-
-%% This year we are doing double-blind reviewing: the reviewers will not know 
-%% who the authors of the paper are. For submission, the NIPS style file will 
-%% automatically anonymize the author list at the beginning of the paper.
-
-%% Please write your paper in such a way to preserve anonymity. Refer to
-%% previous work by the author(s) in the third person, rather than first
-%% person. Do not provide Web links to supporting material at an identifiable
-%% web site.
-
-%%\subsection{Electronic submission}
-%%
-%% \textbf{THE SUBMISSION DEADLINE IS June 5, 2015. SUBMISSIONS MUST BE LOGGED BY
-%% 23:00, June 5, 2015, UNIVERSAL TIME}
-
-%% You must enter your submission in the electronic submission form available at
-%% the NIPS website listed above. You will be asked to enter paper title, name of
-%% all authors, keyword(s), and data about the contact
-%% author (name, full address, telephone, fax, and email). You will need to
-%% upload an electronic (postscript or pdf) version of your paper.
-
-%% You can upload more than one version of your paper, until the
-%% submission deadline. We strongly recommended uploading your paper in
-%% advance of the deadline, so you can avoid last-minute server congestion.
-%%
-%% Note that your submission is only valid if you get an e-mail
-%% confirmation from the server. If you do not get such an e-mail, please
-%% try uploading again. 
-
+Vroonen \cite{vroonen} et el. developed APROPOS projection system.  Given a players ratings of a particular skill and corresponding ages, APROPOS can effectively predict his future ratings for that skill at any other ages using k-nearest neighbors approach. APROPOS depends on the ratings of similar players to predict how a players skill can evolve in future. The first problem of our model is a specific case of the problem addressed by APROPOS in which: 
+\begin{equation}
+age_{target} = max_{a \in age_{training}}(a) + 1. 
+\end{equation}
+   
+APROPOS uses kNN as the prediction algorithm. Therefore it may suffer from the curse of dimensionality for large feature space. We try to solve this issue by using neural networks and ensemble learning based methods. 
 
 \subsection{Retrieval of style files}
 
