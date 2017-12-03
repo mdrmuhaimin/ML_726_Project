@@ -72,8 +72,8 @@ from keras.layers import Dense
 data2018 = pd.read_csv('shuffled_filtered_fifa2018_players.csv')
 del data2018['ID']
 
-train_data2018 = data2018.ix[:458,:]
-train_overall_column2018 = data2018.ix[:458,'overall']
+train_data2018 = data2018.ix[:399,:]
+train_overall_column2018 = data2018.ix[:399,'overall']
 train_data_with_added_columns2018 = process_columns_for_work_rate_att_work_rate_def2018(train_data2018,['att','def'])
 
 del train_data_with_added_columns2018['overall']
@@ -100,7 +100,7 @@ model2018.add(Dense(units=1, activation='linear', use_bias=True,kernel_initializ
 
 
 model2018.compile(loss='mean_absolute_error',optimizer=keras.optimizers.SGD(lr=0.031,momentum=0.1))
-model2018.fit(x=X_train2018, y=Y_train2018, batch_size=458, epochs=500)
+model2018.fit(x=X_train2018, y=Y_train2018, batch_size=400, epochs=500)
 
 print('MODEL 2018')
 print(model2018.evaluate(x=X_test2018, y=Y_test2018))
@@ -112,8 +112,8 @@ del data_features['id']
 
 features = ['pac','sho','pas','dri','def','phy']
 
-train_data_features = data_features.ix[:458,:]
-train_overall_column_features = data_features.ix[:458,features]
+train_data_features = data_features.ix[:399,:]
+train_overall_column_features = data_features.ix[:399,features]
 train_data_with_added_columns_features = process_columns_for_work_rate_att_work_rate_def_features(train_data_features,['f16_Att','f16_Def','f17_Att','f17_Def'])
 
 for f in features:
@@ -138,44 +138,30 @@ Y_test_features = test_overall_column_features.as_matrix()
 
 model_features = Sequential()
 
-model_features.add(Dense(units=1000, activation='relu', input_shape=(89,), use_bias=True, kernel_initializer='random_uniform', bias_initializer='random_uniform'))
+model_features.add(Dense(units=500, activation='relu', input_shape=(89,), use_bias=True, kernel_initializer='random_uniform', bias_initializer='random_uniform'))
 model_features.add(Dense(units=6, activation='linear', use_bias=True, kernel_initializer='random_uniform', bias_initializer='random_uniform'))
 
 
 model_features.compile(loss='mean_absolute_error', optimizer=keras.optimizers.SGD(lr=0.031,momentum=0.3))
-model_features.fit(x=X_train_features, y=Y_train_features, batch_size=400, epochs=2000)
+model_features.fit(x=X_train_features, y=Y_train_features, batch_size=400, epochs=1000)
 
 print('MODEL 2016-2017')
 print(model_features.evaluate(x=X_test_features, y=Y_test_features))
-predicted_features=model_features.predict(X_train_features)
+predicted_features=model_features.predict(X_test_features)
 print(predicted_features[0][0])
 
-t2018=model2018.predict(X_train2018)
-print (t2018)
+print (model2018.predict(X_test2018))
 
-np.savetxt('test.txt',X_train2018,fmt='%.2f')
+np.savetxt('test.txt',X_test2018,fmt='%.2f')
 
-for i in range(len(train_data_with_added_columns2018)):
+for i in range(len(test_data_with_added_columns2018)):
     for j in range(3,9):
-        X_train2018[i][j]=predicted_features[i][j-3]/120
+        X_test2018[i][j]=(predicted_features[i][j-3]-train_overall_column2018.mean())/train_overall_column2018.std()
 
-np.savetxt('predicted.txt',X_train2018,fmt='%.2f')
+np.savetxt('predicted.txt',X_test2018,fmt='%.2f')
 
 print ('FINALYYY')
-
-pr2018=model2018.predict(X_train2018)
-print (pr2018)
-
-abserr=0
-for x in range(len(t2018)):
-    a=abs(t2018[x]-pr2018[x])
-    print (a)
-    abserr+=a
-abserr/=len(t2018)
-print ('errrorr')
-print (abserr)
-
-
+print (model2018.predict(X_test2018))
 #print(model2018.evaluate(x=X_test2018,y=Y_test2018))
 
 #------------------------------------------------------------------------------------------#
