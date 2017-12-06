@@ -19,6 +19,11 @@ INPUT_DIR = 'inputs'
 
 
 def get_trainers(trainRatio, estimator_gridbuilders, feature_cols, label_col, metricName=None ):
+    #
+    # Original authour Mr. Greg Baker, Senior Lecturer, School of Computing Science, Simon Fraser University
+    # Modified by, Muhammad Raihan Muhaimin, mmuhaimi@sfu.ca
+    #
+
     column_names = dict(featuresCol='feature_cols',
                         labelCol=label_col,
                         predictionCol="{}_pred".format(label_col))
@@ -60,6 +65,11 @@ def get_model_params(model_param):
 
 
 def get_best_model(training_data, test_data):
+    #
+    # Original authour Mr. Greg Baker, Senior Lecturer, School of Computing Science, Simon Fraser University
+    # Modified by, Muhammad Raihan Muhaimin, mmuhaimi@sfu.ca
+    #
+
 
     feature_cols = training_data.columns[2:]
     label_cols = training_data.columns[1]

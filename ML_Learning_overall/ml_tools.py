@@ -1,3 +1,7 @@
+#
+# Original authour Mr. Greg Baker, Senior Lecturer, School of Computing Science, Simon Fraser University
+# Modified by, Muhammad Raihan Muhaimin, mmuhaimi@sfu.ca
+#
 from pyspark.ml import Estimator
 from pyspark.ml.tuning import ParamGridBuilder
 
@@ -62,10 +66,11 @@ def create_graph(df, col1, col2, bins=(100, 100), cmap='gist_heat_r', fraction=1
         plt.pcolormesh(X, Y, H, cmap=plt.get_cmap(cmap))
         plt.xlabel(col1)
         plt.ylabel(col2)
+        plt.axis([45, 95, 45, 95])
         plt.savefig('{}_hist.png'.format(base_name))
     if dots == True:
-        plt.plot(np.array(c1v), 'rs')
-        plt.plot(np.array(c2v), 'g^')
+        plt.plot(np.array(c1v), 'r')
+        plt.plot(np.array(c2v), 'g')
         plt.axis('tight')
         # plt.grid('on')
         plt.savefig('{}_dots.png'.format(base_name))
